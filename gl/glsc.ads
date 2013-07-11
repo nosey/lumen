@@ -1,67 +1,78 @@
--------------------------------------------------------------------------------
---  Filename       : glsc.ads
---  Date           : 2012-04-11
---  File Revision  : 6
---  Copyright      : Copyright (c) 2011, Eutopia Labs Ltd,
---                 : All rights reserved.
---  Purpose        : Raw Ada Binding for Graphics Library API
---  Programmer     : David Rees
--------------------------------------------------------------------------------
---  Specification  : Safety Critical Profile Version 1.0.1
---  Overview       : http://www.khronos.org/openglsc
---  Reference      : http://www.khronos.org/registry/glsc/specs/sc_spec_1_0_1.pdf
--------------------------------------------------------------------------------
---  Certifications : NONE
---  Compliances    : NONE
---  Guidance       : ISO/IEC TR 15942:2000, Ada 2005 LRM,
---                 : Ada Quality and Style Guide [AQS]
---  Status         : Work In Progress
--------------------------------------------------------------------------------
---
---  Permission to use, copy, modify, and/or distribute this software for any
---  purpose with or without fee is hereby granted, provided that:
---
---   1. Redistributions of this source code must retain the copyright notice,
---      this list of conditions, and the following disclaimer.
---   2. Except in the copyright notice above, the names of its contributors
---      and copyright holders shall not be used to endorse or otherwise
---      promote the sale of, use of, or any other dealings in; this software
---      without prior written authorization from the copyright holder.
---   3. Derivatives or redistributions of this work shall not be used in any
---      form by individuals, entities, or groups who deny individuals of their
---      inalienable natural human rights, or who violate any articles of the
---      Universal Declaration of Human Rights.
---   4. This licence is subject to change during development, at the sole
---      discretion of the copyright holder.
---
--- THIS SOFTWARE IS PROVIDED BY THE  COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
--- AND ANY  EXPRESS OR IMPLIED WARRANTIES,  INCLUDING, BUT NOT LIMITED  TO, THE
--- IMPLIED WARRANTIES OF  MERCHANTABILITY AND FITNESS FOR  A PARTICULAR PURPOSE
--- ARE  DISCLAIMED. IN  NO EVENT  SHALL  THE COPYRIGHT  HOLDER OR  CONTRIBUTORS
--- BE  LIABLE FOR  ANY  DIRECT, INDIRECT,  INCIDENTAL,  SPECIAL, EXEMPLARY,  OR
--- CONSEQUENTIAL  DAMAGES  (INCLUDING,  BUT  NOT  LIMITED  TO,  PROCUREMENT  OF
--- SUBSTITUTE GOODS  OR SERVICES; LOSS  OF USE,  DATA, OR PROFITS;  OR BUSINESS
--- INTERRUPTION)  HOWEVER CAUSED  AND ON  ANY THEORY  OF LIABILITY,  WHETHER IN
--- CONTRACT,  STRICT LIABILITY,  OR  TORT (INCLUDING  NEGLIGENCE OR  OTHERWISE)
--- ARISING IN ANY WAY  OUT OF THE USE OF THIS SOFTWARE, EVEN  IF ADVISED OF THE
--- POSSIBILITY OF SUCH DAMAGE.
+------------------------------------------------------------------------
+--  Filename       : glsc.ads                                         --
+--  Date           : 2013-07-09                                       --
+--  File Revision  : 7                                                --
+--  Copyright      : Copyright (c) 2011-2013, Eutopia Labs Ltd,       --
+--                 : David Rees, All rights reserved.                 --
+--  Purpose        : Graphics Library API - Ada Binding               --
+--  Programmer     : David Rees                                       --
+------------------------------------------------------------------------
+--  Specification  : Safety Critical Profile Version 1.0.1            --
+------------------------------------------------------------------------
+--  http://www.khronos.org/openglsc                                   --
+--  http://www.khronos.org/registry/glsc/specs/sc_spec_1_0_1.pdf      --
+------------------------------------------------------------------------
+--  Certifications : NONE                                             --
+--  Compliances    : NONE                                             --
+--  Guidance       : ISO/IEC TR 15942:2000, Ada 2005 LRM,             --
+--                 : Ada Quality and Style Guide [AQS]                --
+--  Status         : Work In Progress                                 --
+------------------------------------------------------------------------
+--  Permission to use, copy, modify, and/or distribute this software  --
+--  for any  purpose with or without fee is hereby granted, provided  --
+--  that:                                                             --
+--                                                                    --
+--  1. Redistributions of this source code must retain the copyright  --
+--     notice, this list of conditions, and the following disclaimer. --
+--  2. Except in the copyright notice above, the names of its         --
+--     contributors and copyright holders shall not be used to        --
+--     endorse or otherwise promote the sale of, use of, or any other --
+--     dealings in; this software without prior written authorization --
+--     from the copyright holder.                                     --
+--  3. Derivatives or redistributions of this work shall not be used  --
+--     in any form by individuals, entities, or groups who deny       --
+--     individuals of their inalienable natural human rights, or who  --
+--     violate any articles of the Universal Declaration of Human     --
+--     Rights.                                                        --
+--  4. If you use this source, or a derivative thereof, to produce a  --
+--     commercial binary, you shall contact the copyright holder      --
+--     (specified above) and grant them permission to promote such    --
+--     use publicly.                                                  --
+--  5. This licence is subject to change during development, at the   --
+--     sole discretion of the copyright holder.                       --
+--                                                                    --
+-- THIS  SOFTWARE  IS  PROVIDED  BY  THE   COPYRIGHT   HOLDERS   AND  --
+-- CONTRIBUTORS "AS IS" AND ANY  EXPRESS    OR  IMPLIED  WARRANTIES,  --
+-- INCLUDING,  BUT  NOT  LIMITED  TO,  THE  IMPLIED  WARRANTIES   OF  --
+-- MERCHANTABILITY  AND    FITNESS  FOR  A  PARTICULAR  PURPOSE  ARE  --
+-- DISCLAIMED.  IN  NO  EVENT  SHALL   THE   COPYRIGHT   HOLDER   OR  --
+-- CONTRIBUTORS  BE  LIABLE  FOR  ANY  DIRECT,INDIRECT,  INCIDENTAL,  --
+-- SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT  NOT  --
+-- LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS  OF  --
+-- USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER  CAUSED  --
+-- AND ON ANY THEORY  OF  LIABILITY,  WHETHER  IN  CONTRACT,  STRICT  --
+-- LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN  --
+-- ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED  OF  THE  --
+-- POSSIBILITY OF SUCH DAMAGE.                                        --
+------------------------------------------------------------------------
 
 with Interfaces, System;
 
 package GLSC is
+   -- No state at runtime, so it can be consistently replicated in more
+   -- than one partition.
+   pragma Pure;
 
-   pragma Pure; -- No state at runtime, so it can be consistently replicated in
-                -- more than one partition.
-
-
-   ----------------------------------------------------------------------------
-   -- External GL Library Constants -------------------------------------------
-   ----------------------------------------------------------------------------
+   ---------------------------------------------------------------------
+   -- EXTERNAL GL LIBRARY CONSTANTS
+   ---------------------------------------------------------------------
 
    -- Extensions
    GL_OSC_VERSION_1_0      : constant := 1;
-   GL_EXT_paletted_texture : constant := 1; -- required extension
-   GL_OES_single_precision : constant := 1; -- core addition
+   -- required extension
+   GL_EXT_paletted_texture : constant := 1;
+   -- core addition
+   GL_OES_single_precision : constant := 1;
 
    -- ClearBufferMask
    GL_DEPTH_BUFFER_BIT   : constant := 16#00000100#;
@@ -481,101 +492,148 @@ package GLSC is
    GL_COLOR_TABLE_LUMINANCE_SIZE_EXT : constant := 16#80DE#;
    GL_COLOR_TABLE_INTENSITY_SIZE_EXT : constant := 16#80DF#;
 
+   ---------------------------------------------------------------------
+   -- C RELATED CONSTANTS
+   ---------------------------------------------------------------------
+   -- Only some of the type specifications from Interfaces.C are
+   -- used, so for simplicity's sake, only the ones referenced will
+   -- be defined in this spec.
+   ---------------------------------------------------------------------
 
-   -- C related Constants -----------------------------------------------------
-   -- Only some of the type specifications from Interfaces.C are used, so for
-   -- simplicity's sake, only the ones referenced will be defined in this spec.
-   ----------------------------------------------------------------------------
    CHAR_BIT  : constant := 8;
 
-   -- 2's complement implementations have SCHAR_MIN equal to –128
-   SCHAR_MIN : constant := -128; -- Minimum value for a signed char
-   SCHAR_MAX : constant := 127;  -- Maximum value for a signed char
-   UCHAR_MAX : constant := 255;  -- Maximum value for an unsigned char
+   -- Minimum value for a signed char. 2's complement implementations
+   -- have SCHAR_MIN equal to –128
+   SCHAR_MIN : constant := -128;
+   -- Maximum value for a signed char
+   SCHAR_MAX : constant := 127;
+   -- Maximum value for an unsigned char
+   UCHAR_MAX : constant := 255;
 
-   ----------------------------------------------------------------------------
-   -- GL types - Note: GL types are NOT C types. ------------------------------
-   ----------------------------------------------------------------------------
+   ---------------------------------------------------------------------
+   -- GL TYPES - NOTE: GL TYPES ARE NOT C TYPES
+   ---------------------------------------------------------------------
    -- Double-precision floating-point (parameters and data types) are
    -- eliminated completely in the Safety-Critical GL specification.
-   -- All integer quantity parameters (widths, heights, array lengths, etc.)
-   -- should be typed GLsizei, not GLint or GLuint.  Note that GLsizei
-   -- generates an error only for negative values, so all integer quantity
-   -- parameters should accept the value zero.
+   -- All integer quantity parameters (widths, heights, array lengths,
+   -- etc.) should be typed GLsizei, not GLint or GLuint.  Note that
+   -- GLsizei generates an error only for negative values, so all
+   -- integer quantity parameters should accept the value zero.
    -- Representation attributes specify the minimum bit widths as stated
    -- by the API documentation. The only exception is Boolean, which the
-   -- documentation states a MBW of 1-bit, whereas Ada's Boolean bit width
-   -- of 8-bits is prefered.
+   -- documentation states a MBW of 1-bit, whereas Ada's Boolean bit
+   -- width of 8-bits is prefered.
 
    type signed_char is range SCHAR_MIN .. SCHAR_MAX;
-   for signed_char'Size use CHAR_BIT;	-- Minimum bit width for signed_char
+   
+   -- Minimum bit width for signed_char
+   for signed_char'Size use CHAR_BIT;
 
    type unsigned is mod 2 ** Integer'Size;
    type unsigned_short is mod 2 ** Short_Integer'Size;
 
    type unsigned_char is mod (UCHAR_MAX + 1);
-   for unsigned_char'Size use CHAR_BIT; -- Minimum bit width for unsigned_char
+   
+   -- Minimum bit width for unsigned_char
+   for unsigned_char'Size use CHAR_BIT;
 
    -- Derived types (incompatible with parent type but inherit primitive
    -- operations of the parent type, must have a range overlapping the
    -- parent type)
-   type GLenum is new unsigned;         -- Enumerated Binary Integer
-   for GLenum'Size use 32;              -- Minimum bit width for GLenum
+   
+   -- Enumerated Binary Integer
+   type GLenum is new unsigned;
+   
+   -- Minimum bit width for GLenum
+   for GLenum'Size use 32;
 
-   type GLboolean is new unsigned_char; -- Boolean
-   for GLBoolean'Size use 8;            -- Minimum bit width for GLBoolean
+   -- Boolean
+   type GLboolean is new unsigned_char;
+   
+   -- Minimum bit width for GLBoolean
+   for GLBoolean'Size use 8;
 
-   type GLbitfield is new unsigned;     -- Bit Field
-   for GLBitfield'Size use 32;          -- Minimum bit width for GLBitfield
+   -- Bit Field
+   type GLbitfield is new unsigned;
+   
+   -- Minimum bit width for GLBitfield
+   for GLBitfield'Size use 32;
 
-   type GLbyte is new signed_char;      -- Signed 2's Complement Binary Integer
-   for GLbyte'Size use 8;               -- Minimum bit width for GLByte
+   -- Signed 2's Complement Binary Integer
+   type GLbyte is new signed_char;
+   
+   -- Minimum bit width for GLByte
+   for GLbyte'Size use 8;
 
-   type GLint is new Integer;           -- Signed 2's Complement Binary Integer
-   for GLint'Size use 32;               -- Minimum bit width for GLint
+   -- Signed 2's Complement Binary Integer
+   type GLint is new Integer;
+   
+   -- Minimum bit width for GLint
+   for GLint'Size use 32;
 
-   type GLsizei is new Integer;         -- Non-negative binary integer
-   for GLsizei'Size use 32;             -- Minimum bit width for GLsizei
+   -- Non-negative binary integer
+   type GLsizei is new Integer;
+   
+   -- Minimum bit width for GLsizei
+   for GLsizei'Size use 32;
 
-   type GLubyte is new unsigned_char;   -- Unsigned Binary Integer
-   for GLubyte'Size use 8;              -- Minimum bit width for GLubyte
+   -- Unsigned Binary Integer
+   type GLubyte is new unsigned_char;
+   
+   -- Minimum bit width for GLubyte
+   for GLubyte'Size use 8;
 
-   type GLshort is new Short_Integer;   -- Signed 2's Complement Binary Integer
-   for GLshort'Size use 16;             -- Minimum bit width for GLshort
+   -- Signed 2's Complement Binary Integer
+   type GLshort is new Short_Integer;
+   
+   -- Minimum bit width for GLshort
+   for GLshort'Size use 16;
 
-   type GLushort is new unsigned_short; -- Unsigned Binary Integer
-   for GLushort'Size use 16;            -- Minimum bit width for GLushort
+   -- Unsigned Binary Integer
+   type GLushort is new unsigned_short;
+   
+   -- Minimum bit width for GLushort
+   for GLushort'Size use 16;
 
-   type GLuint is new unsigned;         -- Unsigned Binary Integer
-   for GLuint'Size use 32;              -- Minimum bit width for GLuint
+   -- Unsigned Binary Integer
+   type GLuint is new unsigned;
+   
+   -- Minimum bit width for GLuint
+   for GLuint'Size use 32;
 
-   ----------------------------------------------------------------------------
-   -- Float Types -------------------------------------------------------------
-   -- If a floating point subtype is unconstrained, then assignments to variables
-   -- of the subtype involve only Overflow_Checks, never Range_Checks.
-   -- All floating point parameters that are clamped to the range [0,1] when
-   -- received, should be typed GLclampf, not GLfloat.
-   ----------------------------------------------------------------------------
-   type GLFloat is new float;           -- Single-Precision Floating-Point
-   for GLFloat'Size use 32;             -- Minimum bit width for GLFloat
+   ---------------------------------------------------------------------
+   -- FLOAT TYPES
+   ---------------------------------------------------------------------
+   -- If a floating point subtype is unconstrained, then assignments
+   -- to variables of the subtype involve only Overflow_Checks, never
+   -- Range_Checks. All floating point parameters that are clamped to
+   -- the range [0,1] when received, should be typed GLclampf, not
+   -- GLfloat.
+   ---------------------------------------------------------------------
 
-   ----------------------------------------------------------------------------
-   -- GLclampf raises Constraint_Error if value is not within the range [0,1]
-   -- WARNING: Check that your implementation really does 'clamp' values.
-   -- Floating-point clamped to [0,1] (minimum bit width 32 bits) with 5
-   -- decimal digits of precision available for floating-point types
-   ----------------------------------------------------------------------------
+   -- Single-Precision Floating-Point
+   type GLFloat is new float;
+   -- Minimum bit width for GLFloat
+   for GLFloat'Size use 32;
+
+   -- GLclampf raises Constraint_Error if value is not within the
+   -- range [0,1]. WARNING: Check that your implementation really
+   -- does 'clamp' values. Floating-point clamped to [0,1] (minimum
+   -- bit width 32 bits) with 5 decimal digits of precision available
+   -- for floating-point types.
    type GLclampf is new float range 0.0 .. 1.0;
-   for GLclampf'Size use 32;            -- Minimum bit width for GLclampf
+   
+   -- Minimum bit width for GLclampf
+   for GLclampf'Size use 32;
 
    subtype GLvoid is System.Address;
 
    -- Internal convenience
    type u_GLfuncptr is access procedure;
 
-   ----------------------------------------------------------------------------
-   -- External Library API procedures -----------------------------------------
-   ----------------------------------------------------------------------------
+   ---------------------------------------------------------------------
+   -- EXTERNAL LIBRARY API PROCEDURES
+   ---------------------------------------------------------------------
 
    procedure glActiveTexture ( Texture : in GLenum );
 
@@ -638,11 +696,11 @@ package GLSC is
                               Pointer : in System.Address );
 
    procedure glColorSubTableEXT ( Target : in GLenum;
-                                  Start  : in GLsizei;
-                                  Count  : in GLsizei;
-                                  Format : in GLenum;
-                                  C_Type : in GLenum;
-                                  Table  : in System.Address );
+                                 Start  : in GLsizei;
+                                 Count  : in GLsizei;
+                                 Format : in GLenum;
+                                 C_Type : in GLenum;
+                                 Table  : in System.Address );
 
    procedure glColorTableEXT ( Target         : in GLenum;
                                Internalformat : in GLenum;
@@ -663,8 +721,8 @@ package GLSC is
 
    procedure glDepthMask ( Flag : in GLboolean );
 
-   procedure glDepthRangef (  zNear : in GLclampf;
-                              zFar  : in GLclampf );
+   procedure glDepthRangef ( zNear : in GLclampf;
+                             zFar  : in GLclampf );
 
    procedure glDisable ( Cap : in GLenum );
 
@@ -729,7 +787,7 @@ package GLSC is
                            Params : access GLfloat );
 
    procedure glGetIntegerv ( Pname  : in GLenum;
-                             Params : access GLint );
+                            Params : access GLint );
 
    procedure glGetLightfv ( Light  : GLenum;
                             Pname  : GLenum;
@@ -935,7 +993,7 @@ package GLSC is
                           Width  : in GLsizei;
                           Height : in GLsizei );
 
--------------------------------------------------------------------------------
+   ------------------------------------------------------------------------
 
 private
 
@@ -950,7 +1008,8 @@ private
    pragma Import (StdCall, glClearColor, "glClearColor");
    pragma Import (StdCall, glClearDepthf, "glClearDepthf");
    pragma Import (StdCall, glClearStencil, "glClearStencil");
-   pragma Import (StdCall, glClientActiveTexture, "glClientActiveTexture");
+   pragma Import (StdCall, glClientActiveTexture,
+     "glClientActiveTexture");
    pragma Import (StdCall, glColor4f, "glColor4f");
    pragma Import (StdCall, glColor4fv, "glColor4fv");
    pragma Import (StdCall, glColor4ub, "glColor4ub");
@@ -964,7 +1023,8 @@ private
    pragma Import (StdCall, glDepthMask, "glDepthMask");
    pragma Import (StdCall, glDepthRangef, "glDepthRangef");
    pragma Import (StdCall, glDisable, "glDisable");
-   pragma Import (StdCall, glDisableClientState, "glDisableClientState");
+   pragma Import (StdCall, glDisableClientState,
+     "glDisableClientState");
    pragma Import (StdCall, glDrawArrays, "glDrawArrays");
    pragma Import (StdCall, glDrawElements, "glDrawElements");
    pragma Import (StdCall, glDrawPixels, "glDrawPixels");
@@ -981,7 +1041,8 @@ private
    pragma Import (StdCall, glGetError, "glGetError");
    pragma Import (StdCall, glGetBooleanv, "glGetBooleanv");
    pragma Import (StdCall, glGetColorTableEXT, "glGetColorTableEXT");
-   pragma Import (StdCall, glGetColorTableParameterivEXT, "glGetColorTableParameterivEXT");
+   pragma Import (StdCall, glGetColorTableParameterivEXT,
+     "glGetColorTableParameterivEXT");
    pragma Import (StdCall, glGetFloatv, "glGetFloatv");
    pragma Import (StdCall, glGetIntegerv, "glGetIntegerv");
    pragma Import (StdCall, glGetLightfv, "glGetLightfv");
